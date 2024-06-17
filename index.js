@@ -1,6 +1,10 @@
 import express from "express";
 import { getInfo } from "./routes/getInfo.js";
+import cors from "cors";
+import helmet from "helmet";
 const app = express();
+app.use(cors());
+app.use(helmet());
 const port = 9000;
 
 app.get("/test", (req, res) => {
