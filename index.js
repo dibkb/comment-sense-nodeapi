@@ -1,16 +1,33 @@
 import express from "express";
-import { getInfo } from "./routes/getInfo.js";
 import cors from "cors";
 import helmet from "helmet";
+import ytext from "youtube-ext";
+
 const app = express();
+
+// Middleware
 app.use(cors());
 app.use(helmet());
-const port = 9000;
 
+// Routes
 app.get("/test", (req, res) => {
-  res.send("Hello, I am testing enpoint 🤗");
+  return res.send("Hello, I am testing endpoint 🤗");
 });
-app.get("/get-info/:ytid", getInfo);
+
+app.get("/get-info/:ytid", async (req, res) => {
+  try {
+    const { ytid } = req.params;
+    if (!ytid) {
+      return res.status(400).json({ message: "No youtube id found" });
+    }
+    const data = await ytext.videoInfo(ytid);
+    return res.status(200).json(data);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+
+const port = process.env.PORT || 9000;
 
 app.listen(port, () => {
   console.log(`Server listening at http://localhost:${port}`);
