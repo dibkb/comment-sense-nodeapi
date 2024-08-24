@@ -19,14 +19,23 @@ app.get("/test", (req, res) => {
 app.get("/get-info/:ytid", async (req, res) => {
   try {
     const { ytid } = req.params;
-    console.log(ytid);
+    console.log("Received YouTube ID:", ytid);
+
     if (!ytid) {
-      return res.status(400).json({ message: "No youtube id provided" });
+      return res.status(400).json({ message: "No YouTube ID provided" });
     }
+
+    console.log("Fetching video data...");
     const data = await youtube.getVideo(ytid);
-    return res.status(200).json(convertToVideoInfo(data));
+
+    console.log("Converting video data...");
+    const videoInfo = convertToVideoInfo(data);
+
+    console.log("Sending response...");
+    return res.status(200).json(videoInfo);
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    console.error("Error in /get-info endpoint:", error);
+    return res.status(500).json({ error: error.message, stack: error.stack });
   }
 });
 app.get("/search-video/:title", async (req, res) => {
