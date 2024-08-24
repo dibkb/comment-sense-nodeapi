@@ -2,9 +2,6 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import ytext from "youtube-ext";
-import { Client } from "youtubei";
-import { convertToVideoInfo } from "./convert.js";
-const youtube = new Client();
 const app = express();
 
 // Middleware
@@ -26,13 +23,9 @@ app.get("/get-info/:ytid", async (req, res) => {
     }
 
     console.log("Fetching video data...");
-    const data = await youtube.getVideo(ytid);
-
-    console.log("Converting video data...");
-    const videoInfo = convertToVideoInfo(data);
-
+    const data = await ytext.videoInfo(ytid);
     console.log("Sending response...");
-    return res.status(200).json(videoInfo);
+    return res.status(200).json(data);
   } catch (error) {
     console.error("Error in /get-info endpoint:", error);
     return res.status(500).json({ error: error.message, stack: error.stack });
