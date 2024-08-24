@@ -18,7 +18,7 @@ app.get("/get-info/:ytid", async (req, res) => {
   try {
     const { ytid } = req.params;
     if (!ytid) {
-      return res.status(400).json({ message: "No youtube id found" });
+      return res.status(400).json({ message: "No youtube id provided" });
     }
     const data = await ytext.videoInfo(ytid);
     return res.status(200).json(data);
