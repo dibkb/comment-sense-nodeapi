@@ -2,12 +2,11 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import ytext from "youtube-ext";
+import { getInfo } from "ytscr";
 const app = express();
-
 // Middleware
 app.use(cors());
 app.use(helmet());
-
 // Routes
 app.get("/test", (req, res) => {
   return res.send("Hello, I am testing endpoint 🤗");
@@ -16,16 +15,12 @@ app.get("/test", (req, res) => {
 app.get("/get-info/:ytid", async (req, res) => {
   try {
     const { ytid } = req.params;
-    console.log("Received YouTube ID:", ytid);
 
     if (!ytid) {
       return res.status(400).json({ message: "No YouTube ID provided" });
     }
-
-    console.log("Fetching video data...");
-    const data = await ytext.videoInfo(ytid);
-    console.log("Sending response...");
-    return res.status(200).json(data);
+    const info = await getInfo(ytid);
+    return res.status(200).json({ info });
   } catch (error) {
     console.error("Error in /get-info endpoint:", error);
     return res.status(500).json({ error: error.message, stack: error.stack });
